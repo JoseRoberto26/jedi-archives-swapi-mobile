@@ -1,14 +1,25 @@
-import React from 'react';
-import { View, Text, SafeAreaView } from 'react-native';
-import { globalStyles } from './styles/GlobalStyles';
+import { NavigationContainer } from '@react-navigation/native';
+import React, { useState } from 'react';
+import CharacterList from './screens/CharacterList/characterList';
+//import CharacterDetails from './screens/CharacterDetails/characterDetails';
+
+
+const reactNavigation = require('react-navigation');
+
+
+const Stack = reactNavigation.createStackNavigator();
 
 const App = () => {
+
+
   return (
-    <SafeAreaView style={globalStyles.SafeArea}>
-      <View>
-        <Text>Hello, world!</Text>
-      </View>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigation>
+        <Stack.Screen name="CharacterList" component={CharacterList}></Stack.Screen>
+        {/* <Stack.Screen name="CharacterDetails" component={CharacterDetails}></Stack.Screen> */}
+      </Stack.Navigation>
+    </NavigationContainer>
+    
   );
 };
 
