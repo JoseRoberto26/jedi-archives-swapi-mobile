@@ -8,7 +8,6 @@ const Header = ( ) => {
     return ( 
         <View style={headerStyles.header}>
             <Image style={headerStyles.logo} source={logo}></Image>
-            <Text style={headerStyles.title}>Jedi Archives</Text>
         </View>
     )
 }
@@ -28,11 +27,6 @@ const headerStyles = StyleSheet.create(
             width: '20%',
             height: '100%',
             resizeMode: 'contain', 
-            marginRight: 'auto'
-        },
-        title: { 
-            color: 'white',
-            marginRight: '37%'
         }
     }
 )

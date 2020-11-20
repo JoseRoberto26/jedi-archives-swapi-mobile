@@ -7,4 +7,9 @@ export interface Character {
     birth_year: string;
     homeworld?: string;
     films?: string[];
+    hair_color?: string;
+    skin_color?: string; 
+    eye_color?: string;
+    gender?: string;
+    species?: string[];
 }

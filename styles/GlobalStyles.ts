@@ -2,8 +2,7 @@ import { StatusBar, StyleSheet } from 'react-native';
 
 export const globalStyles = StyleSheet.create({
   SafeArea: {
-    flex: 1,
-    paddingTop: StatusBar.currentHeight ?  (StatusBar.currentHeight + 20) : 20,
+    flex: 1
   },
   SearchInput: { 
     borderWidth: 1, 
@@ -13,6 +12,16 @@ export const globalStyles = StyleSheet.create({
     marginHorizontal: 10,
     paddingHorizontal: 10, 
     backgroundColor: 'white'
+  },
+  Background: { 
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center",
+    width: '100%',
+    height: '100%'
+  },
+  PrimaryTextColor: { 
+    color: '#77aeb7'
   }
 });
 

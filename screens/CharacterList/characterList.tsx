@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { View, Text, SafeAreaView, TextInput, StyleSheet, ImageBackground, FlatList } from 'react-native';
+import { View, Text, SafeAreaView, TextInput, StyleSheet, ImageBackground, FlatList, TouchableOpacity, Image } from 'react-native';
+import { NavigationStackScreenProps } from 'react-navigation-stack';
 import Card from '../../components/Card/card';
 import Header from '../../components/Header/header';
 import { globalStyles } from '../../styles/GlobalStyles';
@@ -9,7 +10,11 @@ import { Character } from '../../utils/models/Character';
 
 const background = require('../../assets/images/background.jpg');
 
-const CharacterList = () => { 
+interface ICharacterListProps extends NavigationStackScreenProps  { 
+
+}
+
+const CharacterList = ({navigation} : ICharacterListProps) => { 
 
     const [query, setQuery] = useState<string>('');
   const [characters, setCharacters] = useState<Character[]>([
@@ -46,14 +51,19 @@ const CharacterList = () => {
   const renderCard = (item: any) => { 
     console.log(item.item)
     return ( 
-       <Card key={item.item.id} character={item.item}></Card>
+      <TouchableOpacity onPress={() => navigation.navigate('Details', { 
+          character: item.item
+      })}>
+        <Card key={item.item.id} character={item.item}/>
+      </TouchableOpacity>
+       
     )
   }
     
     return ( 
         <SafeAreaView style={globalStyles.SafeArea}>
         <Header/>
-        <ImageBackground style={HomeStyles.background} source={background}>
+        <ImageBackground style={globalStyles.Background} source={background}>
 
         <View style={HomeStyles.container}>
           <TextInput
@@ -76,12 +86,5 @@ export default CharacterList;
 const HomeStyles = StyleSheet.create({ 
     container: { 
       marginVertical: 20,
-    },
-    background: { 
-      flex: 1,
-      resizeMode: "cover",
-      justifyContent: "center",
-      width: '100%',
-      height: '100%'
     }
   })
