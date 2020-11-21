@@ -1,38 +1,59 @@
-import React, { useEffect, useState } from 'react';
-import { View, SafeAreaView, TextInput, StyleSheet, ImageBackground, FlatList, TouchableOpacity, Image, Text } from 'react-native';
+import { inject, observer, useLocalStore } from 'mobx-react';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, SafeAreaView, TextInput, StyleSheet, ImageBackground, FlatList, TouchableOpacity, Image, Text, ActivityIndicator } from 'react-native';
 import { NavigationStackScreenProps } from 'react-navigation-stack';
 import Card from '../../components/Card/card';
 import Header from '../../components/Header/header';
+import LoadingSpin from '../../components/Loading/loading';
+import { CharacterStoreContext } from '../../stores/Characters/CharacterStore';
+import { RootStoresContext } from '../../stores/RootStore';
 import { globalStyles } from '../../styles/GlobalStyles';
+import { Character } from '../../utils/models/Character';
 
-import { ApplicationState } from '../../store';
-import * as peopleActions from '../../store/ducks/people/action';
-import { useDispatch, useSelector } from 'react-redux';
-import { Person } from '../../store/ducks/people/types';
 
 const background = require('../../assets/images/background.jpg');
 
 interface ICharacterListProps extends NavigationStackScreenProps  { 
 }
 
-const CharacterList = ({navigation} : ICharacterListProps) => { 
-    
-    const [loading, setLoading] = useState(false);
-    
-    const dispatch = useDispatch();
-    const characters = useSelector((state: ApplicationState) => state.people.data);
 
-    const searchPeople = () => { 
-      dispatch(peopleActions.loadRequest())
-      console.log(characters, "asdas")
+const CharacterList = observer(({navigation} : ICharacterListProps) => { 
+    
+    const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const store = useContext(RootStoresContext);
+    const [chars, setChars] = useState<Character[]>([])
+
+    const getCharacters = async() => {
+      setLoading(true)
+      await store.charactersStore.fetchCharactersAsync(page);
+      setChars(store.charactersStore.characters.results);
+      setLoading(false)
+      
     }
 
+    const loadCharacters = async () => {
+      if(loading) return; 
+      await store.charactersStore.fetchCharactersAsync(page+1);
+      const newPageContent = store.charactersStore.characters.results;
+      setChars([...chars, ...newPageContent])
+      setPage(page + 1);
+    }
+
+    const selectCharacter = (character: Character) => { 
+      store.charactersStore.selectCharacter(character);
+      navigation.navigate('Profile')
+    }
+
+    useEffect(() => {
+      console.log(store)
+      setPage(1)
+      getCharacters();
+    }, [])
+
   const renderCard = (item: any) => { 
-    console.log(item.item)
     return ( 
-      <TouchableOpacity onPress={() => navigation.navigate('Profile', { 
-          character: item.item
-      })}>
+      <TouchableOpacity onPress={() => selectCharacter(item.item)}>
         <Card key={item.item.id} character={item.item}/>
       </TouchableOpacity>
        
@@ -43,18 +64,25 @@ const CharacterList = ({navigation} : ICharacterListProps) => {
         <SafeAreaView style={globalStyles.SafeArea}>
         <Header/>
         <ImageBackground style={globalStyles.Background} source={background}>
-        {/* <FlatList keyExtractor={(item) => item.id.toString()} data={characters} renderItem={renderCard} /> */}
-        <TouchableOpacity onPress={() => searchPeople()}>
-          <Text style={{
-            color: 'white'
-          }}>Request</Text>
-        </TouchableOpacity>
+          {loading ? ( 
+            <LoadingSpin/>
+          ) : 
+          (
+            <FlatList
+             keyExtractor={(item) => item.url ?? item.name}
+              data={chars} 
+              renderItem={renderCard}
+              onEndReached={() => loadCharacters()}
+              onEndReachedThreshold={0.1}
+              ListFooterComponent={<LoadingSpin/>}
+              />
+          )}
         
         </ImageBackground>
       
       </SafeAreaView>
     )
-}
+})
 
 export default CharacterList;
 

@@ -64,7 +64,7 @@ const CardStyles = StyleSheet.create({
         borderWidth: 1, 
         borderRadius: 10,
         borderColor: 'white',
-        marginHorizontal: 8,
+        marginHorizontal: 40,
         marginVertical: 16,
         height: 128,
         justifyContent: 'flex-start',

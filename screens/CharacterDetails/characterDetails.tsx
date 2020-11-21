@@ -1,23 +1,39 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Image, ImageBackground, StyleSheet, Text, View } from 'react-native';
 import Carousel from '../../components/Carousel/carousel';
 import LabelWithValue from '../../components/LabelWithValue/labelWithValue';
+import { CharacterStoreContext } from '../../stores/Characters/CharacterStore';
+import { RootStoresContext } from '../../stores/RootStore';
 import { globalStyles } from '../../styles/GlobalStyles';
+import { idFromLink } from '../../utils/formatters/idExtractor';
 import { Character } from '../../utils/models/Character';
+import { Planet } from '../../utils/models/Planet';
 
 const background = require('../../assets/images/background.jpg');
 const cardBackground = require('../../assets/images/background-card-details-2.jpg');
 
-const CharacterDetails = ({route}) => { 
+const CharacterDetails = () => { 
 
-    const {character} = route.params;
+    const store = useContext(RootStoresContext);
+    const [character, setCharacter] = useState(new Character());
+    const [homeworld, setHomeworld] = useState(new Planet());
 
-    console.log(character)
+    const getPlanetInfo = async (id: number) => { 
+        await store.planetStore.fetchPlanetInfo(id);
+        setHomeworld(store.planetStore.planet);
+    }
+
+    useEffect(() => {
+        setCharacter(store.charactersStore.selectedCharacter);
+        getPlanetInfo(idFromLink(character.homeworld));
+    }, [])
+
 
     return (
         <ImageBackground style={globalStyles.Background} source={background}>
             <Carousel />
-            <View style={detailsStyle.Card}>
+            {character && ( 
+                <View style={detailsStyle.Card}>
                 <ImageBackground style={[globalStyles.Background, detailsStyle.BackgroundBorder]} source={cardBackground}>
                     <View style={detailsStyle.TitleBox}>
                         <Text style={[detailsStyle.Bold, detailsStyle.Title]}>
@@ -27,43 +43,45 @@ const CharacterDetails = ({route}) => {
                     <View style={detailsStyle.InfoBox} >
                         <LabelWithValue
                         label={'Height'}
-                        value={character.height}/>
+                        value={character.height?.toString()}/>
                         <LabelWithValue
                         label={'Mass'}
-                        value={character.mass}/>
+                        value={character.mass?.toString()}/>
                         <LabelWithValue
                         label={'Birth Year'}
-                        value={'19BBY'}/>
+                        value={character.birth_year}/>
                     </View>
                     <View style={detailsStyle.InfoBox}>
                         <LabelWithValue
                             label={'Homeworld'}
-                            value={`Tatooine`}/>
+                            value={`Placeholder`}/>
                         <LabelWithValue
                             label={'Gender'}
-                            value={'male'}/>
+                            value={character.gender}/>
                         <LabelWithValue
                             label={'Species'}
-                            value={''}/>
+                            value={"Placeholder"}/>
                     </View>
                     <View style={detailsStyle.InfoBox}>
                         <LabelWithValue
                             label={'Hair Color'}
-                            value={`blond`}/>
+                            value={character.hair_color}/>
                         <LabelWithValue
                             label={'Skin Color'}
-                            value={'fair'}/>
+                            value={character.skin_color}/>
                         <LabelWithValue
                             label={'Eye Color'}
-                            value={'blue'}/>
+                            value={character.eye_color}/>
                     </View>
                     <View style={[detailsStyle.FilmsBox]}>
                         <LabelWithValue
                             label={'Films'}
-                            value={``}/>
+                            value={`Star Wars: Aquele lá mesmo`}/>
                     </View>
                 </ImageBackground>
             </View>
+            )}
+            
             
         </ImageBackground>
     )

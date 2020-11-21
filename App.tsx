@@ -4,11 +4,10 @@ import CharacterList from './screens/CharacterList/characterList';
 import CharacterDetails from './screens/CharacterDetails/characterDetails';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StackHeaderOptions } from '@react-navigation/stack/lib/typescript/src/types';
+import { Provider } from 'mobx-react';
+import Stores from './stores/RootStore';
 
 const Stack = createStackNavigator();
-
-import store from './store';
-import { Provider } from 'react-redux';
 
 const App = () => {
 
@@ -26,7 +25,8 @@ const App = () => {
 
 
   return (
-    <Provider store={store}>
+    
+    <Provider {...Stores}>
       <NavigationContainer >
           <Stack.Navigator>
             <Stack.Screen options={headerOptions} name="Jedi Archives" component={CharacterList}></Stack.Screen>
@@ -34,6 +34,7 @@ const App = () => {
           </Stack.Navigator>
       </NavigationContainer> 
     </Provider>
+      
       
   );
 };
