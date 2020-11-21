@@ -10,9 +10,9 @@ import { capitalize, formattedHeight, formattedMass } from '../../utils/formatte
 import { completeFilmName } from '../../utils/formatters/filmNameFormatter';
 import { idFromLink } from '../../utils/formatters/idExtractor';
 import { Character } from '../../utils/models/Character';
-import { Film } from '../../utils/models/Film';
 import { Planet } from '../../utils/models/Planet';
 import { Species } from '../../utils/models/Specie';
+import { FontAwesome } from '@expo/vector-icons';
 
 const background = require('../../assets/images/background.jpg');
 const cardBackground = require('../../assets/images/background-card-details-2.jpg');
@@ -25,6 +25,7 @@ const CharacterDetails = () => {
     const [species, setSpecies] = useState(new Species())
     const [films, setFilms] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
+    const [isFavorite, setIsFavorite] = useState(false);
 
     const getPlanetInfo = async (id: number) => { 
         await store.planetStore.fetchPlanetInfo(id);
@@ -62,10 +63,16 @@ const CharacterDetails = () => {
     }
 
     useEffect(() => {
+        setIsFavorite(store.charactersStore.favoriteCharacters.includes(store.charactersStore.selectedCharacter))
         setCharacter(store.charactersStore.selectedCharacter);
         getAditionalInfo();
     }, [])
 
+
+    const addToFavorite = (character: Character) => {
+        setIsFavorite(!isFavorite)
+        store.charactersStore.setFavorite(character)
+    }
 
     return (
         <ImageBackground style={globalStyles.Background} source={background}>
@@ -114,6 +121,9 @@ const CharacterDetails = () => {
                     <ScrollView style={[detailsStyle.FilmsBox]}>
                         <LabelWithListValues label={'Films'} values={films} />
                     </ScrollView>
+                    <View style={detailsStyle.ButtonBox}>
+                        <FontAwesome.Button color={isFavorite ? 'white' : 'black'} style={detailsStyle.FavButton} name="star" onPress={() => addToFavorite(character)}/>
+                    </View> 
                 </ImageBackground>
             </View>
             )}
@@ -144,6 +154,15 @@ const detailsStyle = StyleSheet.create( {
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         width: 100
+    },
+    ButtonBox: { 
+        justifyContent: 'center',
+        alignItems: "center",
+        marginBottom: 8
+    },
+    FavButton: {
+        backgroundColor: '#1d1c1cd1',
+        borderWidth: 0
     },
     Bold: { 
         fontWeight: 'bold'

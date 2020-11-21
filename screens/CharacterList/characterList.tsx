@@ -1,3 +1,4 @@
+import CheckBox from '@react-native-community/checkbox';
 import { inject, observer, useLocalStore } from 'mobx-react';
 import React, { useContext, useEffect, useState } from 'react';
 import { View, SafeAreaView, TextInput, StyleSheet, ImageBackground, FlatList, TouchableOpacity, Image, Text, ActivityIndicator } from 'react-native';
@@ -23,6 +24,7 @@ const CharacterList = observer(({navigation} : ICharacterListProps) => {
     const [page, setPage] = useState(1);
     const store = useContext(RootStoresContext);
     const [chars, setChars] = useState<Character[]>([])
+    const [onlyFavorites, setOnlyFavorites] = useState(false);
 
     const getCharacters = async() => {
       setLoading(true)
@@ -33,7 +35,7 @@ const CharacterList = observer(({navigation} : ICharacterListProps) => {
     }
 
     const loadCharacters = async () => {
-      if(loading) return; 
+      if(loading || onlyFavorites) return; 
       await store.charactersStore.fetchCharactersAsync(page+1);
       const newPageContent = store.charactersStore.characters.results;
       setChars([...chars, ...newPageContent])
@@ -53,7 +55,14 @@ const CharacterList = observer(({navigation} : ICharacterListProps) => {
       getCharacters();
     }, [])
 
+    useEffect(() => {
+      setPage(1)
+      console.log(store.charactersStore.favoriteCharacters)
+      onlyFavorites ? setChars(store.charactersStore.favoriteCharacters) : getCharacters();
+    }, [onlyFavorites])
+
   const renderCard = (item: any) => { 
+    
     return ( 
       <TouchableOpacity onPress={() => selectCharacter(item.item)}>
         <Card key={item.item.id} character={item.item}/>
@@ -66,18 +75,42 @@ const CharacterList = observer(({navigation} : ICharacterListProps) => {
         <SafeAreaView style={globalStyles.SafeArea}>
         <Header/>
         <ImageBackground style={globalStyles.Background} source={background}>
+        <View style={HomeStyles.CheckboxContainer}>
+                <CheckBox 
+                  value={onlyFavorites}
+                  tintColors={
+                    {
+                      true: '#77aeb7',
+                      false: '#77aeb7'
+                    }
+                  }
+                  onValueChange={(newValue) => setOnlyFavorites(newValue)}
+                />
+                <Text style={[globalStyles.PrimaryTextColor, globalStyles.MainText, HomeStyles.CheckboxLabel]}>
+                  Display favorites only
+                </Text>
+            </View>
           {loading ? ( 
             <LoadingSpin/>
           ) : 
           (
+            <>
+            {
+              (onlyFavorites && chars.length == 0) && (
+              <View>
+                <Text>No favorites yet.</Text>
+              </View>
+              )
+            }
             <FlatList
              keyExtractor={(item) => item.url ?? item.name}
               data={chars} 
               renderItem={renderCard}
               onEndReached={() => loadCharacters()}
               onEndReachedThreshold={0.1}
-              ListFooterComponent={<LoadingSpin/>}
+              ListFooterComponent={onlyFavorites ? null : <LoadingSpin/>}
               />
+            </>
           )}
         
         </ImageBackground>
@@ -91,5 +124,14 @@ export default CharacterList;
 const HomeStyles = StyleSheet.create({ 
     container: { 
       marginVertical: 20,
+    }, 
+    CheckboxContainer: { 
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: 12,
+      flexDirection: 'row'
+    }, 
+    CheckboxLabel: { 
+      marginBottom: 2
     }
   })

@@ -5,6 +5,7 @@ import BaseStore from '../BaseStore';
 
 export interface ICharacterStore { 
     characters: Character[];
+    //favoriteCharacters: Character[];
 }
 
 export class CharacterStore extends BaseStore implements ICharacterStore { 
@@ -15,10 +16,18 @@ export class CharacterStore extends BaseStore implements ICharacterStore {
 
     @observable characters;
     @observable selectedCharacter = new Character();
+    @observable favoriteCharacters = new Array<Character>();
 
     @action
     selectCharacter = (character: Character) => { 
         this.selectedCharacter = character;
+    }
+
+    @action
+    setFavorite = (character: Character) => { 
+        this.favoriteCharacters.includes(character) ? 
+        this.favoriteCharacters.splice(this.favoriteCharacters.indexOf(character), 1) : 
+        this.favoriteCharacters.push(character);
     }
 
     @action

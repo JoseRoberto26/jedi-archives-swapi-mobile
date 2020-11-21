@@ -22,6 +22,9 @@ export const globalStyles = StyleSheet.create({
   },
   PrimaryTextColor: { 
     color: '#77aeb7'
+  },
+  MainText: { 
+    fontSize: 16
   }
 });
 
