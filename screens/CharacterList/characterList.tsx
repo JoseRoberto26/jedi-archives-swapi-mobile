@@ -52,8 +52,13 @@ const CharacterList = observer(({navigation} : ICharacterListProps) => {
         store.filmStore.fetchFilmsAsync();
       }
       setPage(1)
-      getCharacters();
+      onlyFavorites ? setChars(store.charactersStore.favoriteCharacters) : getCharacters();
     }, [])
+
+    useEffect(() => { 
+      onlyFavorites ? setChars(store.charactersStore.favoriteCharacters) : getCharacters();
+
+    }, [navigation])
 
     useEffect(() => {
       setPage(1)

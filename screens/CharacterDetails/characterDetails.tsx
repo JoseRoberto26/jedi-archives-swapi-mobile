@@ -70,9 +70,12 @@ const CharacterDetails = () => {
 
 
     const addToFavorite = (character: Character) => {
-        setIsFavorite(!isFavorite)
+        isFavorite ? setIsFavorite(false) : setIsFavorite(true)
         store.charactersStore.setFavorite(character)
     }
+    useEffect(() => {
+        console.log({isFavorite})
+    }, [isFavorite])
 
     return (
         <ImageBackground style={globalStyles.Background} source={background}>

@@ -10,7 +10,7 @@ const mockPhoto = require('../../assets/images/logo.png');
 
 const Card = ( {character}: ICardProps) => { 
 
-    const [loading, setLoading] = useState<Boolean>(true);
+    const [loading, setLoading] = useState<Boolean>(false);
     const [imgSrc, setImgSrc] = useState<string | null>(null);
 
     const SEARCH_URL = `https://www.googleapis.com/customsearch/v1?key=AIzaSyDYrtt9b1pGLAXaIFjCg0j3jJM69psThpA&cx=015504602976033325475:fqoyxqbmz5y&q=${character.name}&searchType=image`
