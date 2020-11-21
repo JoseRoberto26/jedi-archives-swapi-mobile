@@ -6,7 +6,6 @@
       <change beforePath="$PROJECT_DIR$/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/App.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/screens/CharacterDetails/characterDetails.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/screens/CharacterDetails/characterDetails.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/screens/CharacterList/characterList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/screens/CharacterList/characterList.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -41,10 +40,10 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="378" y="159" width="1200" height="796" key="AVDManager" timestamp="1605882230522">
+    <state x="378" y="159" width="1200" height="796" key="AVDManager" timestamp="1605921745337">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="378" y="159" width="1200" height="796" key="AVDManager/0.0.1920.1040@0.0.1920.1040" timestamp="1605882230522" />
+    <state x="378" y="159" width="1200" height="796" key="AVDManager/0.0.1920.1040@0.0.1920.1040" timestamp="1605921745337" />
     <state x="252" y="278" width="998" height="708" key="SettingsEditor" timestamp="1605826138715">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

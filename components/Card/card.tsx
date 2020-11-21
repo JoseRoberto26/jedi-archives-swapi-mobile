@@ -50,7 +50,6 @@ const Card = ( {character}: ICardProps) => {
                 <Text>Birth year: {character.birth_year}</Text>
                 <Text>Height: {character.height}</Text>
                 <Text>Mass: {character.mass}</Text>
-                <Text>Planet: </Text>
             </View>
         </View>
     )
