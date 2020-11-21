@@ -11,7 +11,7 @@ export interface IPlanetStore {
 export class PlanetStore extends BaseStore implements IPlanetStore { 
 
 
-    PLANET_PATH = `${this.BASE_URL}planet/`
+    PLANET_PATH = `${this.BASE_URL}planets/`
 
     @observable planet;
 

@@ -1,13 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Image, ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Carousel from '../../components/Carousel/carousel';
+import LabelWithListValues from '../../components/LabelWithListValues/labelWithListValues';
 import LabelWithValue from '../../components/LabelWithValue/labelWithValue';
-import { CharacterStoreContext } from '../../stores/Characters/CharacterStore';
+import LoadingSpin from '../../components/Loading/loading';
 import { RootStoresContext } from '../../stores/RootStore';
 import { globalStyles } from '../../styles/GlobalStyles';
+import { capitalize, formattedHeight, formattedMass } from '../../utils/formatters/dataFormatters';
+import { completeFilmName } from '../../utils/formatters/filmNameFormatter';
 import { idFromLink } from '../../utils/formatters/idExtractor';
 import { Character } from '../../utils/models/Character';
+import { Film } from '../../utils/models/Film';
 import { Planet } from '../../utils/models/Planet';
+import { Species } from '../../utils/models/Specie';
 
 const background = require('../../assets/images/background.jpg');
 const cardBackground = require('../../assets/images/background-card-details-2.jpg');
@@ -17,22 +22,55 @@ const CharacterDetails = () => {
     const store = useContext(RootStoresContext);
     const [character, setCharacter] = useState(new Character());
     const [homeworld, setHomeworld] = useState(new Planet());
+    const [species, setSpecies] = useState(new Species())
+    const [films, setFilms] = useState<string[]>([]);
+    const [loading, setLoading] = useState(true);
 
     const getPlanetInfo = async (id: number) => { 
         await store.planetStore.fetchPlanetInfo(id);
         setHomeworld(store.planetStore.planet);
+        
+    }
+
+    const getSpeciesInfo = async (id: number) => { 
+        await store.speciesStore.fetchSpeciesInfo(id);
+        setSpecies(store.speciesStore.species)
+        
+    }
+
+    const getFilmsInfo = async (urls: string[]) => {
+       
+        const characterFilms = store.filmStore.films.filter(film => urls.includes(film.url))
+        let filmNames: string[] = [];
+        characterFilms.map(film => { 
+            filmNames.push(completeFilmName(film))
+        })
+        setFilms(filmNames);
+    }
+
+    const getAditionalInfo = async () => {
+        await getPlanetInfo(idFromLink(store.charactersStore.selectedCharacter.homeworld));
+        if(store.charactersStore.selectedCharacter.species.length > 0){
+            await getSpeciesInfo(idFromLink(store.charactersStore.selectedCharacter.species[0]))
+        }
+        let filmUrls: string[] = [];
+        store.charactersStore.selectedCharacter.films.map(film => {
+            filmUrls.push(film)
+        })
+        await getFilmsInfo(filmUrls);
+        setLoading(false)
     }
 
     useEffect(() => {
         setCharacter(store.charactersStore.selectedCharacter);
-        getPlanetInfo(idFromLink(character.homeworld));
+        getAditionalInfo();
     }, [])
 
 
     return (
         <ImageBackground style={globalStyles.Background} source={background}>
             <Carousel />
-            {character && ( 
+            {loading ? (<LoadingSpin/>) :  ( 
                 <View style={detailsStyle.Card}>
                 <ImageBackground style={[globalStyles.Background, detailsStyle.BackgroundBorder]} source={cardBackground}>
                     <View style={detailsStyle.TitleBox}>
@@ -43,10 +81,10 @@ const CharacterDetails = () => {
                     <View style={detailsStyle.InfoBox} >
                         <LabelWithValue
                         label={'Height'}
-                        value={character.height?.toString()}/>
+                        value={formattedHeight(character.height)}/>
                         <LabelWithValue
                         label={'Mass'}
-                        value={character.mass?.toString()}/>
+                        value={formattedMass(character.mass)}/>
                         <LabelWithValue
                         label={'Birth Year'}
                         value={character.birth_year}/>
@@ -54,30 +92,28 @@ const CharacterDetails = () => {
                     <View style={detailsStyle.InfoBox}>
                         <LabelWithValue
                             label={'Homeworld'}
-                            value={`Placeholder`}/>
+                            value={homeworld?.name}/>
                         <LabelWithValue
                             label={'Gender'}
-                            value={character.gender}/>
+                            value={capitalize(character.gender)}/>
                         <LabelWithValue
                             label={'Species'}
-                            value={"Placeholder"}/>
+                            value={species.name ?? '--'}/>
                     </View>
                     <View style={detailsStyle.InfoBox}>
                         <LabelWithValue
                             label={'Hair Color'}
-                            value={character.hair_color}/>
+                            value={capitalize(character.hair_color)}/>
                         <LabelWithValue
                             label={'Skin Color'}
-                            value={character.skin_color}/>
+                            value={capitalize(character.skin_color)}/>
                         <LabelWithValue
                             label={'Eye Color'}
-                            value={character.eye_color}/>
+                            value={capitalize(character.eye_color)}/>
                     </View>
-                    <View style={[detailsStyle.FilmsBox]}>
-                        <LabelWithValue
-                            label={'Films'}
-                            value={`Star Wars: Aquele lá mesmo`}/>
-                    </View>
+                    <ScrollView style={[detailsStyle.FilmsBox]}>
+                        <LabelWithListValues label={'Films'} values={films} />
+                    </ScrollView>
                 </ImageBackground>
             </View>
             )}
@@ -121,12 +157,9 @@ const detailsStyle = StyleSheet.create( {
         justifyContent: 'center',
         alignContent: 'center',
         textAlign: 'center',
-        marginTop: -30,
-        marginBottom: 35
+        marginBottom: 20
     },
     FilmsBox: {
-        marginVertical: 12,
-        alignItems: 'center',
-        justifyContent: 'center'
+        marginVertical: 12
     }
 })

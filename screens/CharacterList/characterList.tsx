@@ -46,7 +46,9 @@ const CharacterList = observer(({navigation} : ICharacterListProps) => {
     }
 
     useEffect(() => {
-      console.log(store)
+      if(!store.filmStore.films){ 
+        store.filmStore.fetchFilmsAsync();
+      }
       setPage(1)
       getCharacters();
     }, [])

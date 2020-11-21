@@ -22,7 +22,6 @@ const Carousel = ({imgs}: ICarouselProps) => {
         keyExtractor={(item, index) => index.toString()}
         style={{flex: 1, width: '100%', height: 200}}
         renderItem={({item, index}) => { 
-            console.log(item)
             return <Slide key={index} data={item} />
         }}
         pagingEnabled

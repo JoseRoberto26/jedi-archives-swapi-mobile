@@ -1,4 +1,3 @@
-import Axios from 'axios';
 import { observable, action } from 'mobx';
 import { createContext } from 'react';
 import { Character } from '../../utils/models/Character';

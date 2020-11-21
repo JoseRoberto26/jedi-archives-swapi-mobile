@@ -34,7 +34,7 @@ const Card = ( {character}: ICardProps) => {
     }
 
     useEffect(() => { 
-        fetchImages();
+        //fetchImages();
     }, [])
 
     return (
