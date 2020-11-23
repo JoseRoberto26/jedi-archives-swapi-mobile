@@ -27,7 +27,7 @@ const Card = ( {character, index }: ICardProps) => {
     }
 
     useEffect(() => {
-        if(store.imageStore.images.length < index){
+        if(store.imageStore.images.length <= index){
             getImages()
         }
         if(store.imageStore.images && store.imageStore.images.length > 0){

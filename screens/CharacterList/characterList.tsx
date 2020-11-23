@@ -1,6 +1,6 @@
 import { observer  } from 'mobx-react';
-import React, { useContext, useEffect, useState } from 'react';
-import { View, SafeAreaView, StyleSheet, ImageBackground, FlatList, TouchableOpacity, Image, Text, ActivityIndicator } from 'react-native';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { View, SafeAreaView, StyleSheet, ImageBackground, FlatList, TouchableOpacity, Text } from 'react-native';
 import { NavigationStackScreenProps } from 'react-navigation-stack';
 import Card from '../../components/Card/card';
 import Header from '../../components/Header/header';
@@ -24,7 +24,8 @@ const CharacterList = observer(({navigation} : ICharacterListProps) => {
     const store = useContext(RootStoresContext);
     const [chars, setChars] = useState<Character[]>([])
     const [onlyFavorites, setOnlyFavorites] = useState(false);
-
+    const checkboxRef = useRef<any>();
+    const flatListRef = useRef<any>();
     const getCharacters = async() => {
       setLoading(true)
       await store.charactersStore.fetchCharactersAsync(page);
@@ -54,9 +55,12 @@ const CharacterList = observer(({navigation} : ICharacterListProps) => {
       onlyFavorites ? setChars(store.charactersStore.favoriteCharacters) : getCharacters();
     }, [])
 
-    useEffect(() => { 
-      onlyFavorites ? setChars(store.charactersStore.favoriteCharacters) : getCharacters();
+    useEffect(() => {
+      const unsubscribe = navigation.addListener('focus', () => {
+        checkboxRef.current.props.checked ? setChars(store.charactersStore.favoriteCharacters) : getCharacters();
+      });
     }, [navigation])
+
 
     useEffect(() => {
       setPage(1);
@@ -64,7 +68,6 @@ const CharacterList = observer(({navigation} : ICharacterListProps) => {
     }, [onlyFavorites])
 
   const renderCard = (item: any) => { 
-    
     return ( 
       <TouchableOpacity onPress={() => selectCharacter(item.item)}>
         <Card index={item.index} key={item.item.id} character={item.item}/>
@@ -79,6 +82,7 @@ const CharacterList = observer(({navigation} : ICharacterListProps) => {
         <ImageBackground style={globalStyles.Background} source={background}>
         <View style={HomeStyles.CheckboxContainer}>
           <CheckBox
+            ref={checkboxRef}
             title={<Text style={globalStyles.MainText}>
               Display favorites only
             </Text>}
@@ -103,6 +107,7 @@ const CharacterList = observer(({navigation} : ICharacterListProps) => {
               )
             }
             <FlatList
+            ref={flatListRef}
              keyExtractor={(item) => item.url ?? item.name}
               data={chars} 
               renderItem={renderCard}

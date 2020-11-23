@@ -77,7 +77,10 @@ const CharacterDetails = () => {
     }
 
     useEffect(() => {
-        setIsFavorite(store.charactersStore.favoriteCharacters.includes(store.charactersStore.selectedCharacter))
+        const isAFavoriteCharacter = store.charactersStore.favoriteCharacters.find(character => { 
+            return character.url === store.charactersStore.selectedCharacter.url
+        })
+        setIsFavorite(isAFavoriteCharacter ? true: false)
         setCharacter(store.charactersStore.selectedCharacter);
         getAditionalInfo();
     }, [])
@@ -87,9 +90,6 @@ const CharacterDetails = () => {
         isFavorite ? setIsFavorite(false) : setIsFavorite(true)
         store.charactersStore.setFavorite(character)
     }
-    useEffect(() => {
-        console.log({isFavorite})
-    }, [isFavorite])
 
     return (
         <ImageBackground style={globalStyles.Background} source={background}>
