@@ -18,11 +18,11 @@ An interface built with React Native and SWAPI - Star Wars API in order to displ
     - Favorite list 
 
 ## Screenshots
-![alt text](https://i.imgur.com/VyJTKZb.png)
-(https://i.imgur.com/JGimW1j.png)
-(https://i.imgur.com/Rm9pf6f.png)
-(https://i.imgur.com/GMDNqg4.png)
-(https://i.imgur.com/28H8VEL.png)
+![Home Screen - Character List](https://i.imgur.com/VyJTKZb.png)
+![Character Details](https://i.imgur.com/JGimW1j.png)
+![Character Details 2](https://i.imgur.com/Rm9pf6f.png)
+![Favorite Character](https://i.imgur.com/GMDNqg4.png)
+![Favorites only](https://i.imgur.com/28H8VEL.png)
 
 ## Tests
 
