@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "jedi-archives",
+    "name": "Jedi Archives",
     "slug": "jedi-archives",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/app-icon.jpg",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/jedi-splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,13 +17,17 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.joseroberto26.jediarchives",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.joseroberto26.jediarchives",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
