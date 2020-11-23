@@ -178,7 +178,7 @@ const detailsStyle = StyleSheet.create( {
         flexDirection: 'row',
         marginVertical: 0,
         justifyContent: 'flex-start',
-        alignItems: 'flex-start',
+        alignItems: 'center',
         width: 100
     },
     ButtonBox: { 
