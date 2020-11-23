@@ -3,7 +3,7 @@ import { FlatList } from 'react-native';
 import Slide from './slide';
 
 interface ICarouselProps { 
-    imgs?: string[];
+    imgs?: string[] | null;
 }
 
 const Carousel = ({imgs}: ICarouselProps) => { 

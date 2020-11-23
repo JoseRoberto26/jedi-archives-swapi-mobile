@@ -1,40 +1,42 @@
-import React, { useEffect, useState } from 'react'; 
+import React, { useContext, useEffect, useState } from 'react'; 
 import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
+import { RootStoresContext } from '../../stores/RootStore';
+import { globalStyles } from '../../styles/GlobalStyles';
 import { Character } from '../../utils/models/Character';
+import { CustomSearchImage } from '../../utils/models/ImageObject';
 
 interface ICardProps { 
-    character: Character
+    character: Character;
+    index: number;
 }
 
 const mockPhoto = require('../../assets/images/logo.png');
 
-const Card = ( {character}: ICardProps) => { 
+const Card = ( {character, index }: ICardProps) => { 
 
     const [loading, setLoading] = useState<Boolean>(false);
     const [imgSrc, setImgSrc] = useState<string | null>(null);
+    const store = useContext(RootStoresContext);
 
-    const SEARCH_URL = `https://www.googleapis.com/customsearch/v1?key=AIzaSyDYrtt9b1pGLAXaIFjCg0j3jJM69psThpA&cx=015504602976033325475:fqoyxqbmz5y&q=${character.name}&searchType=image`
-
-    const fetchImages = () => { 
-        setLoading(true)
-        try {
-            fetch(SEARCH_URL)
-            .then(response => response.json())
-            .then(data =>{
-                if(data.items){
-                    setImgSrc(data.items[0]?.link)
-                }
-            }) 
-        } catch (error) {
-            console.log(error)
-        }
-        finally{
-            setLoading(false)
-        }
+    const getImages = async() => { 
+        await store.imageStore.fetchImages(character.name);
+        const savedImages = store.imageStore.images.find(object => { 
+            return object.name == character.name;
+        })
+        setImgSrc(savedImages?.images[0].link ?? null);
     }
 
-    useEffect(() => { 
-        //fetchImages();
+    useEffect(() => {
+        if(store.imageStore.images.length < index){
+            getImages()
+        }
+        if(store.imageStore.images && store.imageStore.images.length > 0){
+            const savedImages = store.imageStore.images.find(object => { 
+                return object.name == character.name;
+            })
+            setImgSrc(savedImages?.images[0].link ?? null);
+        }
+        
     }, [])
 
     return (
@@ -46,10 +48,10 @@ const Card = ( {character}: ICardProps) => {
             } 
             </View>
             <View style={CardStyles.InfoBox}>
-                <Text style={CardStyles.Title}>{character.name}</Text>
-                <Text>Birth year: {character.birth_year}</Text>
-                <Text>Height: {character.height}</Text>
-                <Text>Mass: {character.mass}</Text>
+                <Text style={[CardStyles.Title, globalStyles.MainText]}>{character.name}</Text>
+                <Text style={[globalStyles.MainText]}>Birth year: {character.birth_year}</Text>
+                <Text style={[globalStyles.MainText]}>Height: {character.height}</Text>
+                <Text style={[globalStyles.MainText]}>Mass: {character.mass}</Text>
             </View>
         </View>
     )
@@ -75,10 +77,12 @@ const CardStyles = StyleSheet.create({
         marginVertical: 8,
     },
     ImgBox: { 
-        width: '45%'
+        width: '35%',
     },
     InfoBox: { 
-        paddingHorizontal: 16
+        paddingHorizontal: 16,
+        backgroundColor: "#0c0a0acc",
+        width: '100%'
     },
     Photo: { 
         width: '100%', 

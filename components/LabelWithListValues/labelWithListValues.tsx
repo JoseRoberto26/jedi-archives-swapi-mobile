@@ -12,7 +12,7 @@ const LabelWithListValues = ( {label, values}: ILabelWithListValuesProps) => {
         <View style={LabelWithValueStyles.Box}>
             <Text style={[LabelWithValueStyles.Label]}>{label}</Text>
             {values.map((value, index) => 
-            (<Text key={index} style={[LabelWithValueStyles.Value, globalStyles.PrimaryTextColor]}>{value}</Text>)
+            (<Text key={index} style={[LabelWithValueStyles.Value, globalStyles.MainText]}>{value}</Text>)
             )}
         </View>
     )
@@ -29,11 +29,11 @@ const LabelWithValueStyles = StyleSheet.create(
         },
         Label: { 
             fontSize: 12,
-            color: 'white'
+            color: 'white',
+            fontFamily: 'Goldman'
         }, 
         Value: { 
-            fontSize: 14,
-            fontWeight: "bold"
+            fontSize: 12,
         }
     }
 )

@@ -1,15 +1,14 @@
-import CheckBox from '@react-native-community/checkbox';
-import { inject, observer, useLocalStore } from 'mobx-react';
+import { observer  } from 'mobx-react';
 import React, { useContext, useEffect, useState } from 'react';
-import { View, SafeAreaView, TextInput, StyleSheet, ImageBackground, FlatList, TouchableOpacity, Image, Text, ActivityIndicator } from 'react-native';
+import { View, SafeAreaView, StyleSheet, ImageBackground, FlatList, TouchableOpacity, Image, Text, ActivityIndicator } from 'react-native';
 import { NavigationStackScreenProps } from 'react-navigation-stack';
 import Card from '../../components/Card/card';
 import Header from '../../components/Header/header';
 import LoadingSpin from '../../components/Loading/loading';
-import { CharacterStoreContext } from '../../stores/Characters/CharacterStore';
 import { RootStoresContext } from '../../stores/RootStore';
 import { globalStyles } from '../../styles/GlobalStyles';
 import { Character } from '../../utils/models/Character';
+import { CheckBox } from 'react-native-elements'
 
 
 const background = require('../../assets/images/background.jpg');
@@ -57,12 +56,10 @@ const CharacterList = observer(({navigation} : ICharacterListProps) => {
 
     useEffect(() => { 
       onlyFavorites ? setChars(store.charactersStore.favoriteCharacters) : getCharacters();
-
     }, [navigation])
 
     useEffect(() => {
-      setPage(1)
-      console.log(store.charactersStore.favoriteCharacters)
+      setPage(1);
       onlyFavorites ? setChars(store.charactersStore.favoriteCharacters) : getCharacters();
     }, [onlyFavorites])
 
@@ -70,7 +67,7 @@ const CharacterList = observer(({navigation} : ICharacterListProps) => {
     
     return ( 
       <TouchableOpacity onPress={() => selectCharacter(item.item)}>
-        <Card key={item.item.id} character={item.item}/>
+        <Card index={item.index} key={item.item.id} character={item.item}/>
       </TouchableOpacity>
        
     )
@@ -81,20 +78,18 @@ const CharacterList = observer(({navigation} : ICharacterListProps) => {
         <Header/>
         <ImageBackground style={globalStyles.Background} source={background}>
         <View style={HomeStyles.CheckboxContainer}>
-                <CheckBox 
-                  value={onlyFavorites}
-                  tintColors={
-                    {
-                      true: '#77aeb7',
-                      false: '#77aeb7'
-                    }
-                  }
-                  onValueChange={(newValue) => setOnlyFavorites(newValue)}
-                />
-                <Text style={[globalStyles.PrimaryTextColor, globalStyles.MainText, HomeStyles.CheckboxLabel]}>
-                  Display favorites only
-                </Text>
-            </View>
+          <CheckBox
+            title={<Text style={globalStyles.MainText}>
+              Display favorites only
+            </Text>}
+            checked={onlyFavorites}
+            containerStyle={{
+              backgroundColor: 'transparent',
+              borderColor: 'transparent'
+            }}
+            onPress={() => setOnlyFavorites(!onlyFavorites)}
+          />
+        </View>
           {loading ? ( 
             <LoadingSpin/>
           ) : 

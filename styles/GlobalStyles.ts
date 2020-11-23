@@ -20,11 +20,9 @@ export const globalStyles = StyleSheet.create({
     width: '100%',
     height: '100%'
   },
-  PrimaryTextColor: { 
-    color: '#77aeb7'
-  },
   MainText: { 
-    fontSize: 16
+    color: '#77aeb7',
+    fontFamily: 'Goldman'
   }
 });
 

@@ -11,7 +11,7 @@ const LabelWithValue = ( {label, value}: ILabelWithValueProps) => {
     return ( 
         <View style={LabelWithValueStyles.Box}>
             <Text style={[LabelWithValueStyles.Label]}>{label}</Text>
-            <Text style={[LabelWithValueStyles.Value, globalStyles.PrimaryTextColor]}>{value}</Text>
+            <Text style={[LabelWithValueStyles.Value, globalStyles.MainText]}>{value}</Text>
         </View>
     )
 }
@@ -27,11 +27,11 @@ const LabelWithValueStyles = StyleSheet.create(
         },
         Label: { 
             fontSize: 12,
-            color: 'white'
+            color: 'white',
+            fontFamily: 'Goldman'
         }, 
         Value: { 
             fontSize: 14,
-            fontWeight: "bold"
         }
     }
 )

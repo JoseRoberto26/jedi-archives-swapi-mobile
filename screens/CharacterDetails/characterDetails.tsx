@@ -12,7 +12,7 @@ import { idFromLink } from '../../utils/formatters/idExtractor';
 import { Character } from '../../utils/models/Character';
 import { Planet } from '../../utils/models/Planet';
 import { Species } from '../../utils/models/Specie';
-import { FontAwesome } from '@expo/vector-icons';
+import { Icon } from 'react-native-elements';
 
 const background = require('../../assets/images/background.jpg');
 const cardBackground = require('../../assets/images/background-card-details-2.jpg');
@@ -26,6 +26,7 @@ const CharacterDetails = () => {
     const [films, setFilms] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
     const [isFavorite, setIsFavorite] = useState(false);
+    const [savedImages, setSavedImages] = useState<string[] | null>();
 
     const getPlanetInfo = async (id: number) => { 
         await store.planetStore.fetchPlanetInfo(id);
@@ -59,7 +60,20 @@ const CharacterDetails = () => {
             filmUrls.push(film)
         })
         await getFilmsInfo(filmUrls);
+        await getImages();
         setLoading(false)
+    }
+
+    const getImages = async () => {
+        const savedImagesFromStore = store.imageStore.images.find(object => { 
+            return object.name == store.charactersStore.selectedCharacter.name;
+        })
+        savedImagesFromStore ? 
+        setSavedImages([
+            savedImagesFromStore.images[0].link ,
+            savedImagesFromStore.images[1].link ,
+            savedImagesFromStore.images[2].link, 
+        ]) : setSavedImages(null)
     }
 
     useEffect(() => {
@@ -79,59 +93,68 @@ const CharacterDetails = () => {
 
     return (
         <ImageBackground style={globalStyles.Background} source={background}>
-            <Carousel />
+            
             {loading ? (<LoadingSpin/>) :  ( 
+                <>
+                <Carousel imgs={savedImages} />
                 <View style={detailsStyle.Card}>
                 <ImageBackground style={[globalStyles.Background, detailsStyle.BackgroundBorder]} source={cardBackground}>
                     <View style={detailsStyle.TitleBox}>
-                        <Text style={[detailsStyle.Bold, detailsStyle.Title]}>
+                        <Text style={[detailsStyle.Title]}>
                             {character.name}
                         </Text>
                     </View>
-                    <View style={detailsStyle.InfoBox} >
-                        <LabelWithValue
-                        label={'Height'}
-                        value={formattedHeight(character.height)}/>
-                        <LabelWithValue
-                        label={'Mass'}
-                        value={formattedMass(character.mass)}/>
-                        <LabelWithValue
-                        label={'Birth Year'}
-                        value={character.birth_year}/>
-                    </View>
-                    <View style={detailsStyle.InfoBox}>
-                        <LabelWithValue
-                            label={'Homeworld'}
-                            value={homeworld?.name}/>
-                        <LabelWithValue
-                            label={'Gender'}
-                            value={capitalize(character.gender)}/>
-                        <LabelWithValue
-                            label={'Species'}
-                            value={species.name ?? '--'}/>
-                    </View>
-                    <View style={detailsStyle.InfoBox}>
-                        <LabelWithValue
-                            label={'Hair Color'}
-                            value={capitalize(character.hair_color)}/>
-                        <LabelWithValue
-                            label={'Skin Color'}
-                            value={capitalize(character.skin_color)}/>
-                        <LabelWithValue
-                            label={'Eye Color'}
-                            value={capitalize(character.eye_color)}/>
-                    </View>
-                    <ScrollView style={[detailsStyle.FilmsBox]}>
-                        <LabelWithListValues label={'Films'} values={films} />
+                    <ScrollView style={detailsStyle.Scroll}>
+                        <View style={detailsStyle.InfoBox} >
+                            <LabelWithValue
+                            label={'Height'}
+                            value={formattedHeight(character.height)}/>
+                            <LabelWithValue
+                            label={'Mass'}
+                            value={formattedMass(character.mass)}/>
+                            <LabelWithValue
+                            label={'Birth Year'}
+                            value={character.birth_year}/>
+                        </View>
+                        <View style={detailsStyle.InfoBox}>
+                            <LabelWithValue
+                                label={'Homeworld'}
+                                value={homeworld?.name}/>
+                            <LabelWithValue
+                                label={'Gender'}
+                                value={capitalize(character.gender)}/>
+                            <LabelWithValue
+                                label={'Species'}
+                                value={species.name ?? '--'}/>
+                        </View>
+                        <View style={detailsStyle.InfoBox}>
+                            <LabelWithValue
+                                label={'Hair Color'}
+                                value={capitalize(character.hair_color)}/>
+                            <LabelWithValue
+                                label={'Skin Color'}
+                                value={capitalize(character.skin_color)}/>
+                            <LabelWithValue
+                                label={'Eye Color'}
+                                value={capitalize(character.eye_color)}/>
+                        </View>
+                        <View style={[detailsStyle.FilmsBox]}>
+                            <LabelWithListValues label={'Films'} values={films} />
+                        </View>
                     </ScrollView>
+                    
                     <View style={detailsStyle.ButtonBox}>
-                        <FontAwesome.Button color={isFavorite ? 'white' : 'black'} style={detailsStyle.FavButton} name="star" onPress={() => addToFavorite(character)}/>
+                        <Icon
+                        name="star"
+                        type="star"
+                        color={isFavorite ? 'white' : 'black'}
+                        onPress={() => addToFavorite(character)}
+                        ></Icon>
                     </View> 
                 </ImageBackground>
             </View>
+            </>
             )}
-            
-            
         </ImageBackground>
     )
 }
@@ -161,19 +184,13 @@ const detailsStyle = StyleSheet.create( {
     ButtonBox: { 
         justifyContent: 'center',
         alignItems: "center",
-        marginBottom: 8
-    },
-    FavButton: {
-        backgroundColor: '#1d1c1cd1',
-        borderWidth: 0
-    },
-    Bold: { 
-        fontWeight: 'bold'
+        marginBottom: 16,
     },
     Title: { 
         fontSize: 28,
         alignSelf: "center",
         color: 'white',
+        fontFamily: 'Goldman'
     },
     TitleBox: { 
         justifyContent: 'center',
@@ -183,5 +200,8 @@ const detailsStyle = StyleSheet.create( {
     },
     FilmsBox: {
         marginVertical: 12
+    },
+    Scroll: { 
+        marginBottom: 12
     }
 })
